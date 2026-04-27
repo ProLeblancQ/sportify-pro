@@ -1,0 +1,21 @@
+node_modules/
+.env
+.env.*
+dist/
+/generated/prisma
+
+# Logs
+logs/
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/*
+!.vscode/extensions.json
+.idea
+
+# Tests
+coverage/

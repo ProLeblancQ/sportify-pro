@@ -1,0 +1,62 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Role {
+  id    Int    @id @default(autoincrement())
+  label String @unique
+  users User[]
+}
+
+model User {
+  id         Int       @id @default(autoincrement())
+  first_name String
+  last_name  String
+  email      String    @unique
+  password   String
+  role_id    Int
+  created_at DateTime  @default(now())
+  role       Role      @relation(fields: [role_id], references: [id])
+  coach      Coach?
+  bookings   Booking[]
+}
+
+model Coach {
+  id        Int       @id @default(autoincrement())
+  user_id   Int       @unique
+  specialty String?
+  bio       String?
+  user      User      @relation(fields: [user_id], references: [id])
+  sessions  Session[]
+}
+
+model Session {
+  id               Int       @id @default(autoincrement())
+  title            String
+  scheduled_at     DateTime
+  duration_min     Int
+  max_spots        Int
+  available_spots  Int
+  status           String    @default("open")
+  coach_id         Int
+  created_at       DateTime  @default(now())
+  coach            Coach     @relation(fields: [coach_id], references: [id])
+  bookings         Booking[]
+}
+
+model Booking {
+  id         Int      @id @default(autoincrement())
+  user_id    Int
+  session_id Int
+  booked_at  DateTime @default(now())
+  status     String   @default("confirmed")
+  user       User     @relation(fields: [user_id], references: [id])
+  session    Session  @relation(fields: [session_id], references: [id])
+
+  @@unique([user_id, session_id])
+}
