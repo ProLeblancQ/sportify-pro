@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useAuth } from '../../context/AuthContext'
 import { getAllSessions, deleteSession } from '../../services/session.service'
 import type { Session } from '../../components/SessionCard'
+import { formatDateTime, formatDuration } from '../../utils/date'
 
 export default function SessionsAdminPage() {
   const { token } = useAuth()
@@ -57,8 +58,8 @@ export default function SessionsAdminPage() {
           {sessions.map(s => (
             <tr key={s.id}>
               <td>{s.title}</td>
-              <td>{new Date(s.scheduled_at).toLocaleString('fr-FR')}</td>
-              <td>{s.duration_min} min</td>
+              <td>{formatDateTime(s.scheduled_at)}</td>
+              <td>{formatDuration(s.duration_min)}</td>
               <td>{s.available_spots} / {s.max_spots}</td>
               <td>{s.status}</td>
               <td>

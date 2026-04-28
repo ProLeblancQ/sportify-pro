@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useAuth } from '../../context/AuthContext'
 import { cancelBooking } from '../../services/booking.service'
+import { formatDateTime, formatDuration } from '../../utils/date'
 
 interface Booking {
   id: number
@@ -74,8 +75,8 @@ export default function BookingsPage() {
           {bookings.map(b => (
             <tr key={b.id}>
               <td>{b.session.title}</td>
-              <td>{new Date(b.session.scheduled_at).toLocaleString('fr-FR')}</td>
-              <td>{b.session.duration_min} min</td>
+              <td>{formatDateTime(b.session.scheduled_at)}</td>
+              <td>{formatDuration(b.session.duration_min)}</td>
               <td>{b.status}</td>
               <td>
                 <button className="btn btn-danger" onClick={() => handleCancel(b.id)}>

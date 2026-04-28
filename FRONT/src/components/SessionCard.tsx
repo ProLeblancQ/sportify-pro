@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import { formatDateTime, formatDuration } from '../utils/date'
 
 export interface Session {
   id: number
@@ -22,8 +23,8 @@ export default function SessionCard({ session, children }: Props) {
     <div className="session-card">
       <h3 className="session-card__title">{session.title}</h3>
       <div className="session-card__meta">
-        <span>📅 {new Date(session.scheduled_at).toLocaleString('fr-FR')}</span>
-        <span>⏱ {session.duration_min} min</span>
+        <span>📅 {formatDateTime(session.scheduled_at)}</span>
+        <span>⏱ {formatDuration(session.duration_min)}</span>
         <span className={`session-card__spots${isFull ? ' session-card__spots--full' : ''}`}>
           👥 {session.available_spots} / {session.max_spots} places
         </span>
