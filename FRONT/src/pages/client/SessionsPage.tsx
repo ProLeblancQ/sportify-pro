@@ -6,7 +6,7 @@ import BookingButton from '../../components/BookingButton'
 import type { Session } from '../../components/SessionCard'
 
 export default function SessionsPage() {
-  const { token } = useAuth()
+  const { token, user } = useAuth()
   const [sessions, setSessions] = useState<Session[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
@@ -42,11 +42,13 @@ export default function SessionsPage() {
       <div className="grid grid--3">
         {sessions.map(session => (
           <SessionCard key={session.id} session={session}>
-            <BookingButton
-              sessionId={session.id}
-              availableSpots={session.available_spots}
-              onBooked={fetchSessions}
-            />
+            {user?.role !== 'admin' && (
+              <BookingButton
+                sessionId={session.id}
+                availableSpots={session.available_spots}
+                onBooked={fetchSessions}
+              />
+            )}
           </SessionCard>
         ))}
       </div>

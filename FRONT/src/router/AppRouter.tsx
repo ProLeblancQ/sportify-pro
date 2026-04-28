@@ -27,7 +27,7 @@ export default function AppRouter() {
           <Route path="/bookings" element={<BookingsPage />} />
         </Route>
 
-        <Route element={<ProtectedRoute allowedRoles={['coach', 'admin']} />}>
+        <Route element={<ProtectedRoute allowedRoles={['coach']} />}>
           <Route path="/planning" element={<PlanningPage />} />
           <Route path="/sessions/create" element={<CreateSessionPage />} />
         </Route>

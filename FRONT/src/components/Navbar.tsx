@@ -20,10 +20,10 @@ export default function Navbar() {
         {user?.role === 'client' && (
           <li><Link to="/bookings" className="navbar__link">Mes réservations</Link></li>
         )}
-        {(user?.role === 'coach' || user?.role === 'admin') && (
+        {user?.role === 'coach' && (
           <li><Link to="/planning" className="navbar__link">Planning</Link></li>
         )}
-        {(user?.role === 'coach' || user?.role === 'admin') && (
+        {user?.role === 'coach' && (
           <li><Link to="/sessions/create" className="navbar__link">Créer session</Link></li>
         )}
         {user?.role === 'admin' && (
