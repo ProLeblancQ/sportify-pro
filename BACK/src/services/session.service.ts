@@ -16,6 +16,17 @@ export const createSession = async (data: {
   const coach = await prisma.coach.findUnique({ where: { user_id: data.user_id } })
   if (!coach) throw new Error('Profil coach introuvable pour cet utilisateur')
 
+  const newStart = new Date(data.scheduled_at)
+  const newEnd = new Date(newStart.getTime() + data.duration_min * 60 * 1000)
+
+  const conflicts = await prisma.$queryRaw<{ id: number }[]>`
+    SELECT id FROM \`Session\`
+    WHERE coach_id = ${coach.id}
+    AND scheduled_at < ${newEnd}
+    AND DATE_ADD(scheduled_at, INTERVAL duration_min MINUTE) > ${newStart}
+  `
+  if (conflicts.length > 0) throw new Error('Cette session chevauche une session déjà programmée')
+
   return prisma.session.create({
     data: {
       title: data.title,
