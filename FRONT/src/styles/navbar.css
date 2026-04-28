@@ -13,9 +13,13 @@
 .navbar__brand {
   font-size: var(--font-size-lg);
   font-weight: 700;
-  color: var(--color-secondary);
+  background: linear-gradient(90deg, var(--color-secondary), #fff8dc);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
   text-decoration: none;
   margin-right: var(--space-md);
+  letter-spacing: 0.5px;
 }
 
 .navbar__links {

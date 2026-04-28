@@ -1,7 +1,17 @@
 import { Request, Response } from 'express'
 import * as sessionService from '../services/session.service'
 
-export const getAllSessions = async (req: Request, res: Response) => {
+export const getSessionById = async (req: Request, res: Response) => {
+  try {
+    const session = await sessionService.getSessionById(Number(req.params.id))
+    if (!session) return res.status(404).json({ message: 'Session introuvable' })
+    res.json(session)
+  } catch (err: any) {
+    res.status(400).json({ message: err.message })
+  }
+}
+
+export const getAllSessions = async (_req: Request, res: Response) => {
   const sessions = await sessionService.getAllSessions()
   res.json(sessions)
 }

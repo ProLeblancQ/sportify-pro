@@ -28,6 +28,13 @@ export const createSession = async (data: {
   })
 }
 
+export const getSessionById = (id: number) => {
+  return prisma.session.findUnique({
+    where: { id },
+    include: { bookings: { include: { user: true } } }
+  })
+}
+
 export const deleteSession = (id: number) => {
   return prisma.session.delete({ where: { id } })
 }

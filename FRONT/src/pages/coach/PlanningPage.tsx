@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import { getCoachSessions } from '../../services/session.service'
 import { getErrorMessage } from '../../utils/error'
@@ -35,7 +36,12 @@ export default function PlanningPage() {
 
       <div className="grid grid--3">
         {sessions.map(session => (
-          <SessionCard key={session.id} session={session} />
+          <div key={session.id} style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+            <SessionCard session={session} />
+            <Link to={`/sessions/${session.id}`} className="btn btn-secondary btn-full">
+              Voir les participants
+            </Link>
+          </div>
         ))}
       </div>
     </main>

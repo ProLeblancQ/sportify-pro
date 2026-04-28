@@ -17,6 +17,7 @@ interface Props {
 }
 
 export default function SessionCard({ session, children }: Props) {
+  const booked = session.max_spots - session.available_spots
   const isFull = session.available_spots === 0
 
   return (
@@ -26,9 +27,9 @@ export default function SessionCard({ session, children }: Props) {
         <span>📅 {formatDateTime(session.scheduled_at)}</span>
         <span>⏱ {formatDuration(session.duration_min)}</span>
         <span className={`session-card__spots${isFull ? ' session-card__spots--full' : ''}`}>
-          👥 {session.available_spots} / {session.max_spots} places
+          👥 {booked} / {session.max_spots} inscrits
         </span>
-        <span className="session-card__status">{session.status}</span>
+        <span className={`badge badge--${session.status}`}>{session.status}</span>
       </div>
       {children && <div className="session-card__actions">{children}</div>}
     </div>

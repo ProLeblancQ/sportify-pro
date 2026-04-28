@@ -70,7 +70,7 @@ export default function UsersPage() {
             <tr key={u.id}>
               <td>{u.first_name} {u.last_name}</td>
               <td>{u.email}</td>
-              <td>{u.role.label}</td>
+              <td><span className={`badge badge--${u.role.label}`}>{u.role.label}</span></td>
               <td>
                 <button className="btn btn-danger" onClick={() => handleDelete(u.id)}>
                   Supprimer

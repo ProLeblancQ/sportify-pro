@@ -78,7 +78,7 @@ export default function BookingsPage() {
               <td>{b.session.title}</td>
               <td>{formatDateTime(b.session.scheduled_at)}</td>
               <td>{formatDuration(b.session.duration_min)}</td>
-              <td>{b.status}</td>
+              <td><span className={`badge badge--${b.status}`}>{b.status}</span></td>
               <td>
                 <button className="btn btn-danger" onClick={() => handleCancel(b.id)}>
                   Annuler

@@ -6,6 +6,7 @@ import SessionsPage from '../pages/client/SessionsPage'
 import BookingsPage from '../pages/client/BookingsPage'
 import PlanningPage from '../pages/coach/PlanningPage'
 import CreateSessionPage from '../pages/coach/CreateSessionPage'
+import SessionDetailPage from '../pages/coach/SessionDetailPage'
 import UsersPage from '../pages/admin/UsersPage'
 import SessionsAdminPage from '../pages/admin/SessionsAdminPage'
 import ProtectedRoute from '../components/ProtectedRoute'
@@ -30,6 +31,7 @@ export default function AppRouter() {
         <Route element={<ProtectedRoute allowedRoles={['coach']} />}>
           <Route path="/planning" element={<PlanningPage />} />
           <Route path="/sessions/create" element={<CreateSessionPage />} />
+          <Route path="/sessions/:id" element={<SessionDetailPage />} />
         </Route>
 
         <Route element={<ProtectedRoute allowedRoles={['admin']} />}>

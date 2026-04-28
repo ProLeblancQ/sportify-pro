@@ -61,7 +61,7 @@ export default function SessionsAdminPage() {
               <td>{formatDateTime(s.scheduled_at)}</td>
               <td>{formatDuration(s.duration_min)}</td>
               <td>{s.available_spots} / {s.max_spots}</td>
-              <td>{s.status}</td>
+              <td><span className={`badge badge--${s.status}`}>{s.status}</span></td>
               <td>
                 <button className="btn btn-danger" onClick={() => handleDelete(s.id)}>
                   Supprimer
