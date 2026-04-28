@@ -3,32 +3,36 @@ import { useAuth } from '../../context/AuthContext'
 import { getAllSessions, deleteSession } from '../../services/session.service'
 import type { Session } from '../../components/SessionCard'
 import { formatDateTime, formatDuration } from '../../utils/date'
+import { getErrorMessage } from '../../utils/error'
+import ConfirmDialog from '../../components/ConfirmDialog'
 
 export default function SessionsAdminPage() {
   const { token } = useAuth()
   const [sessions, setSessions] = useState<Session[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const [confirmId, setConfirmId] = useState<number | null>(null)
 
   const fetchSessions = async () => {
     if (!token) return
     try {
       const data = await getAllSessions(token)
       setSessions(data)
-    } catch (err: any) {
-      setError(err.message)
+    } catch (err) {
+      setError(getErrorMessage(err))
     } finally {
       setLoading(false)
     }
   }
 
-  const handleDelete = async (id: number) => {
-    if (!token || !confirm('Supprimer cette session ?')) return
+  const handleConfirmDelete = async () => {
+    if (!token || confirmId === null) return
+    setConfirmId(null)
     try {
-      await deleteSession(token, id)
+      await deleteSession(token, confirmId)
       fetchSessions()
-    } catch (err: any) {
-      setError(err.message)
+    } catch (err) {
+      setError(getErrorMessage(err))
     }
   }
 
@@ -36,6 +40,14 @@ export default function SessionsAdminPage() {
 
   return (
     <main className="page">
+      {confirmId !== null && (
+        <ConfirmDialog
+          message="Êtes-vous sûr de vouloir supprimer cette session ?"
+          onConfirm={handleConfirmDelete}
+          onCancel={() => setConfirmId(null)}
+        />
+      )}
+
       <div className="page__header">
         <h1 className="page__title">Gestion des sessions</h1>
       </div>
@@ -49,7 +61,7 @@ export default function SessionsAdminPage() {
             <th>Titre</th>
             <th>Date</th>
             <th>Durée</th>
-            <th>Places</th>
+            <th>Inscrits</th>
             <th>Statut</th>
             <th>Action</th>
           </tr>
@@ -60,10 +72,10 @@ export default function SessionsAdminPage() {
               <td>{s.title}</td>
               <td>{formatDateTime(s.scheduled_at)}</td>
               <td>{formatDuration(s.duration_min)}</td>
-              <td>{s.available_spots} / {s.max_spots}</td>
+              <td>{s.max_spots - s.available_spots} / {s.max_spots}</td>
               <td><span className={`badge badge--${s.status}`}>{s.status}</span></td>
               <td>
-                <button className="btn btn-danger" onClick={() => handleDelete(s.id)}>
+                <button className="btn btn-danger" onClick={() => setConfirmId(s.id)}>
                   Supprimer
                 </button>
               </td>

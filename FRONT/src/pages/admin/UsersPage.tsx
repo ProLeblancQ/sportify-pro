@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useAuth } from '../../context/AuthContext'
 import { getErrorMessage } from '../../utils/error'
+import ConfirmDialog from '../../components/ConfirmDialog'
 
 interface User {
   id: number
@@ -15,6 +16,7 @@ export default function UsersPage() {
   const [users, setUsers] = useState<User[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const [confirmId, setConfirmId] = useState<number | null>(null)
 
   const fetchUsers = async () => {
     if (!token) return
@@ -31,10 +33,11 @@ export default function UsersPage() {
     }
   }
 
-  const handleDelete = async (id: number) => {
-    if (!token || !confirm('Supprimer cet utilisateur ?')) return
+  const handleConfirmDelete = async () => {
+    if (!token || confirmId === null) return
+    setConfirmId(null)
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/users/${id}`, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/users/${confirmId}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${token}` },
       })
@@ -49,6 +52,14 @@ export default function UsersPage() {
 
   return (
     <main className="page">
+      {confirmId !== null && (
+        <ConfirmDialog
+          message="Êtes-vous sûr de vouloir supprimer cet utilisateur ?"
+          onConfirm={handleConfirmDelete}
+          onCancel={() => setConfirmId(null)}
+        />
+      )}
+
       <div className="page__header">
         <h1 className="page__title">Gestion des utilisateurs</h1>
       </div>
@@ -72,7 +83,7 @@ export default function UsersPage() {
               <td>{u.email}</td>
               <td><span className={`badge badge--${u.role.label}`}>{u.role.label}</span></td>
               <td>
-                <button className="btn btn-danger" onClick={() => handleDelete(u.id)}>
+                <button className="btn btn-danger" onClick={() => setConfirmId(u.id)}>
                   Supprimer
                 </button>
               </td>

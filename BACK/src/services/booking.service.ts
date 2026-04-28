@@ -17,7 +17,11 @@ export const createBooking = async (user_id: number, session_id: number) => {
   // Règle 1 : places disponibles
   if (session.available_spots <= 0) throw new Error('Plus de places disponibles')
 
-  // Règle 2 : pas de conflit de créneau
+  // Règle 2 : déjà inscrit à cette session
+  const existing = await prisma.booking.findFirst({ where: { user_id, session_id } })
+  if (existing) throw new Error('Tu es déjà inscrit à cette session')
+
+  // Règle 4 : pas de conflit de créneau
   const conflict = await prisma.booking.findFirst({
     where: {
       user_id,
@@ -46,7 +50,7 @@ export const cancelBooking = async (id: number, user_id: number) => {
   if (!booking || booking.user_id !== user_id) throw new Error('Réservation introuvable')
 
   await prisma.$transaction([
-    prisma.booking.update({ where: { id }, data: { status: 'cancelled' } }),
+    prisma.booking.delete({ where: { id } }),
     prisma.session.update({
       where: { id: booking.session_id },
       data: { available_spots: { increment: 1 } }

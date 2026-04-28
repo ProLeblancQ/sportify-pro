@@ -3,6 +3,7 @@ import { useAuth } from '../../context/AuthContext'
 import { cancelBooking } from '../../services/booking.service'
 import { formatDateTime, formatDuration } from '../../utils/date'
 import { getErrorMessage } from '../../utils/error'
+import ConfirmDialog from '../../components/ConfirmDialog'
 
 interface Booking {
   id: number
@@ -21,6 +22,7 @@ export default function BookingsPage() {
   const [bookings, setBookings] = useState<Booking[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const [confirmId, setConfirmId] = useState<number | null>(null)
 
   const fetchBookings = async () => {
     if (!token) return
@@ -37,10 +39,11 @@ export default function BookingsPage() {
     }
   }
 
-  const handleCancel = async (id: number) => {
-    if (!token) return
+  const handleConfirm = async () => {
+    if (!token || confirmId === null) return
+    setConfirmId(null)
     try {
-      await cancelBooking(token, id)
+      await cancelBooking(token, confirmId)
       fetchBookings()
     } catch (err) {
       setError(getErrorMessage(err))
@@ -51,6 +54,14 @@ export default function BookingsPage() {
 
   return (
     <main className="page">
+      {confirmId !== null && (
+        <ConfirmDialog
+          message="Êtes-vous sûr de vouloir annuler cette réservation ?"
+          onConfirm={handleConfirm}
+          onCancel={() => setConfirmId(null)}
+        />
+      )}
+
       <div className="page__header">
         <h1 className="page__title">Mes réservations</h1>
       </div>
@@ -80,9 +91,11 @@ export default function BookingsPage() {
               <td>{formatDuration(b.session.duration_min)}</td>
               <td><span className={`badge badge--${b.status}`}>{b.status}</span></td>
               <td>
-                <button className="btn btn-danger" onClick={() => handleCancel(b.id)}>
-                  Annuler
-                </button>
+                {b.status === 'confirmed' && (
+                  <button className="btn btn-danger" onClick={() => setConfirmId(b.id)}>
+                    Annuler
+                  </button>
+                )}
               </td>
             </tr>
           ))}
