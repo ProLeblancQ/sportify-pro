@@ -8,7 +8,8 @@ export const getAllSessions = async (req: Request, res: Response) => {
 
 export const createSession = async (req: Request, res: Response) => {
   try {
-    const session = await sessionService.createSession(req.body)
+    const user_id = req.user!.id
+    const session = await sessionService.createSession({ ...req.body, user_id })
     res.status(201).json(session)
   } catch (err: any) {
     res.status(400).json({ message: err.message })
@@ -25,6 +26,10 @@ export const deleteSession = async (req: Request, res: Response) => {
 }
 
 export const getCoachSessions = async (req: Request, res: Response) => {
-  const sessions = await sessionService.getCoachSessions(Number(req.params.coachId))
-  res.json(sessions)
+  try {
+    const sessions = await sessionService.getCoachSessions(req.user!.id)
+    res.json(sessions)
+  } catch (err: any) {
+    res.status(400).json({ message: err.message })
+  }
 }

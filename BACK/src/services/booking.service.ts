@@ -1,6 +1,14 @@
 import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
 
+export const getMyBookings = (user_id: number) => {
+  return prisma.booking.findMany({
+    where: { user_id },
+    include: { session: true },
+    orderBy: { booked_at: 'desc' }
+  })
+}
+
 export const createBooking = async (user_id: number, session_id: number) => {
 
   const session = await prisma.session.findUnique({ where: { id: session_id } })

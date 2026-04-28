@@ -1,0 +1,50 @@
+.session-card {
+  background-color: var(--color-surface);
+  border-radius: var(--radius-md);
+  padding: var(--space-lg);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  transition: box-shadow 0.2s;
+}
+
+.session-card:hover {
+  box-shadow: var(--shadow-md);
+}
+
+.session-card__title {
+  color: var(--color-secondary);
+  font-size: var(--font-size-lg);
+}
+
+.session-card__meta {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.session-card__spots {
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.session-card__spots--full {
+  color: var(--color-error);
+}
+
+.session-card__status {
+  display: inline-block;
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  background-color: var(--color-primary-light);
+  color: var(--color-text);
+}
+
+.session-card__actions {
+  margin-top: var(--space-sm);
+}

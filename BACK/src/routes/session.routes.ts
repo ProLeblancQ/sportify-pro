@@ -7,6 +7,6 @@ const router = Router()
 router.get('/', authMiddleware, getAllSessions)
 router.post('/', authMiddleware, requireRole('coach'), createSession)
 router.delete('/:id', authMiddleware, requireRole('admin'), deleteSession)
-router.get('/coach/:coachId', authMiddleware, getCoachSessions)
+router.get('/coach/me', authMiddleware, getCoachSessions)
 
 export default router

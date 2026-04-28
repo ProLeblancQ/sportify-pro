@@ -1,6 +1,15 @@
 import { Request, Response } from 'express'
 import * as bookingService from '../services/booking.service'
 
+export const getMyBookings = async (req: Request, res: Response) => {
+  try {
+    const bookings = await bookingService.getMyBookings(req.user!.id)
+    res.json(bookings)
+  } catch (err: any) {
+    res.status(400).json({ message: err.message })
+  }
+}
+
 export const createBooking = async (req: Request, res: Response) => {
   try {
     const user_id = req.user!.id
