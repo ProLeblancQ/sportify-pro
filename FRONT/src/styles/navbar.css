@@ -1,7 +1,8 @@
 .navbar {
   display: flex;
   align-items: center;
-  gap: var(--space-lg);
+  flex-wrap: wrap;
+  gap: var(--space-md);
   padding: var(--space-md) var(--space-xl);
   background-color: var(--color-primary-dark);
   box-shadow: var(--shadow-md);
@@ -18,8 +19,39 @@
   -webkit-text-fill-color: transparent;
   background-clip: text;
   text-decoration: none;
-  margin-right: var(--space-md);
   letter-spacing: 0.5px;
+  flex-shrink: 0;
+}
+
+/* Hamburger — visible seulement sur mobile */
+.navbar__burger {
+  display: none;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 24px;
+  height: 18px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  margin-left: auto;
+}
+
+.navbar__burger span {
+  display: block;
+  height: 2px;
+  width: 100%;
+  background-color: var(--color-text);
+  border-radius: 2px;
+  transition: transform 0.2s, opacity 0.2s;
+}
+
+/* Contenu collapsible */
+.navbar__collapse {
+  display: flex;
+  align-items: center;
+  gap: var(--space-lg);
+  flex: 1;
 }
 
 .navbar__links {
@@ -36,6 +68,7 @@
   padding: var(--space-xs) var(--space-sm);
   border-radius: var(--radius-sm);
   transition: background-color 0.2s;
+  white-space: nowrap;
 }
 
 .navbar__link:hover {
@@ -48,9 +81,61 @@
   display: flex;
   align-items: center;
   gap: var(--space-md);
+  flex-shrink: 0;
 }
 
 .navbar__email {
   font-size: var(--font-size-sm);
   color: var(--color-text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 180px;
+}
+
+/* ── Mobile ── */
+@media (max-width: 768px) {
+  .navbar {
+    padding: var(--space-md);
+  }
+
+  .navbar__burger {
+    display: flex;
+  }
+
+  .navbar__collapse {
+    display: none;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+    gap: var(--space-md);
+    padding-top: var(--space-md);
+    border-top: 1px solid var(--color-border);
+  }
+
+  .navbar__collapse--open {
+    display: flex;
+  }
+
+  .navbar__links {
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+    gap: var(--space-sm);
+  }
+
+  .navbar__link {
+    width: 100%;
+    padding: var(--space-sm) var(--space-md);
+  }
+
+  .navbar__right {
+    margin-left: 0;
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .navbar__email {
+    max-width: 60%;
+  }
 }
