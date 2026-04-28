@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useAuth } from '../../context/AuthContext'
+import { getErrorMessage } from '../../utils/error'
 
 interface User {
   id: number
@@ -23,8 +24,8 @@ export default function UsersPage() {
       })
       if (!res.ok) throw new Error((await res.json()).message)
       setUsers(await res.json())
-    } catch (err: any) {
-      setError(err.message)
+    } catch (err) {
+      setError(getErrorMessage(err))
     } finally {
       setLoading(false)
     }
@@ -39,8 +40,8 @@ export default function UsersPage() {
       })
       if (!res.ok) throw new Error((await res.json()).message)
       fetchUsers()
-    } catch (err: any) {
-      setError(err.message)
+    } catch (err) {
+      setError(getErrorMessage(err))
     }
   }
 

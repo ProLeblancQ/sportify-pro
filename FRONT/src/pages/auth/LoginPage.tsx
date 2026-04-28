@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
+import { getErrorMessage } from '../../utils/error'
 import { login as loginService } from '../../services/auth.service'
 
 export default function LoginPage() {
@@ -19,8 +20,8 @@ export default function LoginPage() {
       const data = await loginService(email, password)
       login(data.token, data.user)
       navigate('/')
-    } catch (err: any) {
-      setError(err.message)
+    } catch (err) {
+      setError(getErrorMessage(err))
     } finally {
       setLoading(false)
     }

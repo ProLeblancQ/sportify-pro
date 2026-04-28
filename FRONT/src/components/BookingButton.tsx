@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useAuth } from '../context/AuthContext'
 import { createBooking } from '../services/booking.service'
+import { getErrorMessage } from '../utils/error'
 
 interface Props {
   sessionId: number
@@ -20,8 +21,8 @@ export default function BookingButton({ sessionId, availableSpots, onBooked }: P
     try {
       await createBooking(token, sessionId)
       onBooked()
-    } catch (err: any) {
-      setError(err.message)
+    } catch (err) {
+      setError(getErrorMessage(err))
     } finally {
       setLoading(false)
     }

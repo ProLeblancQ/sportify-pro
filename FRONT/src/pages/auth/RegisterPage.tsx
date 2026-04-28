@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
+import { getErrorMessage } from '../../utils/error'
 import { register as registerService } from '../../services/auth.service'
 
 export default function RegisterPage() {
@@ -24,8 +25,8 @@ export default function RegisterPage() {
       const data = await loginService(form.email, form.password)
       login(data.token, data.user)
       navigate('/')
-    } catch (err: any) {
-      setError(err.message)
+    } catch (err) {
+      setError(getErrorMessage(err))
     } finally {
       setLoading(false)
     }

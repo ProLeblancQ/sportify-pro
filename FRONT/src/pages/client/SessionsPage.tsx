@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useAuth } from '../../context/AuthContext'
 import { getAllSessions } from '../../services/session.service'
+import { getErrorMessage } from '../../utils/error'
 import SessionCard from '../../components/SessionCard'
 import BookingButton from '../../components/BookingButton'
 import type { Session } from '../../components/SessionCard'
@@ -11,19 +12,21 @@ export default function SessionsPage() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
 
-  const fetchSessions = async () => {
+  const fetchSessions = () => {
     if (!token) return
-    try {
-      const data = await getAllSessions(token)
-      setSessions(data)
-    } catch (err: any) {
-      setError(err.message)
-    } finally {
-      setLoading(false)
-    }
+    getAllSessions(token)
+      .then(data => setSessions(data))
+      .catch(err => setError(getErrorMessage(err)))
+      .finally(() => setLoading(false))
   }
 
-  useEffect(() => { fetchSessions() }, [])
+  useEffect(() => {
+    if (!token) return
+    getAllSessions(token)
+      .then(data => setSessions(data))
+      .catch(err => setError(getErrorMessage(err)))
+      .finally(() => setLoading(false))
+  }, [token])
 
   return (
     <main className="page">

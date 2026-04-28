@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useAuth } from '../../context/AuthContext'
 import { getCoachSessions } from '../../services/session.service'
+import { getErrorMessage } from '../../utils/error'
 import SessionCard from '../../components/SessionCard'
 import type { Session } from '../../components/SessionCard'
 
@@ -14,7 +15,7 @@ export default function PlanningPage() {
     if (!token) return
     getCoachSessions(token)
       .then(setSessions)
-      .catch((err: any) => setError(err.message))
+      .catch((err: unknown) => setError(getErrorMessage(err)))
       .finally(() => setLoading(false))
   }, [])
 

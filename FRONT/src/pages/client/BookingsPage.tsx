@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useAuth } from '../../context/AuthContext'
 import { cancelBooking } from '../../services/booking.service'
 import { formatDateTime, formatDuration } from '../../utils/date'
+import { getErrorMessage } from '../../utils/error'
 
 interface Booking {
   id: number
@@ -29,8 +30,8 @@ export default function BookingsPage() {
       })
       if (!res.ok) throw new Error((await res.json()).message)
       setBookings(await res.json())
-    } catch (err: any) {
-      setError(err.message)
+    } catch (err) {
+      setError(getErrorMessage(err))
     } finally {
       setLoading(false)
     }
@@ -41,8 +42,8 @@ export default function BookingsPage() {
     try {
       await cancelBooking(token, id)
       fetchBookings()
-    } catch (err: any) {
-      setError(err.message)
+    } catch (err) {
+      setError(getErrorMessage(err))
     }
   }
 

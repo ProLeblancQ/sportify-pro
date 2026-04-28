@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
+import { getErrorMessage } from '../../utils/error'
 import { createSession } from '../../services/session.service'
 
 export default function CreateSessionPage() {
@@ -28,8 +29,8 @@ export default function CreateSessionPage() {
     try {
       await createSession(token, form)
       navigate('/planning')
-    } catch (err: any) {
-      setError(err.message)
+    } catch (err) {
+      setError(getErrorMessage(err))
     } finally {
       setLoading(false)
     }
