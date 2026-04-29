@@ -14,6 +14,13 @@
   transform: translateY(-3px);
 }
 
+.session-card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--space-sm);
+}
+
 .session-card__title {
   color: var(--color-secondary);
   font-size: var(--font-size-lg);
@@ -59,4 +66,73 @@
 
 .session-card__coach:hover {
   text-decoration: underline;
+}
+
+/* Participants */
+.session-card__participants {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  min-height: 28px;
+}
+
+.session-card__spots-count {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  font-weight: 500;
+}
+
+.session-card__spots-count--full {
+  color: var(--color-error);
+}
+
+.session-card__spots-empty {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  font-style: italic;
+}
+
+/* Avatar stack */
+.avatar-stack {
+  display: flex;
+  align-items: center;
+}
+
+.avatar-stack__item {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 2px solid var(--color-surface);
+  overflow: hidden;
+  margin-left: -8px;
+  background-color: var(--color-primary-dark);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.avatar-stack__item:first-child {
+  margin-left: 0;
+}
+
+.avatar-stack__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.avatar-stack__initials {
+  font-size: 0.6rem;
+  font-weight: 700;
+  color: var(--color-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0;
+}
+
+.avatar-stack__overflow {
+  font-size: 0.6rem;
+  font-weight: 700;
+  color: var(--color-text-muted);
+  background-color: var(--color-primary);
 }

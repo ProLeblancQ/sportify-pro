@@ -1,10 +1,21 @@
 import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
 
+const participantSelect = {
+  include: {
+    user: {
+      select: { id: true, first_name: true, last_name: true, avatar_url: true },
+    },
+  },
+}
+
 export const getAllSessions = () => {
   return prisma.session.findMany({
     where: { status: 'open' },
-    include: { coach: { include: { user: true } } },
+    include: {
+      coach: { include: { user: true } },
+      bookings: participantSelect,
+    },
     orderBy: { scheduled_at: 'asc' }
   })
 }

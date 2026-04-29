@@ -9,6 +9,15 @@ export const getCoachById = (id: number) => {
       sessions: {
         where: { status: 'open', scheduled_at: { gte: new Date() } },
         orderBy: { scheduled_at: 'asc' },
+        include: {
+          bookings: {
+            include: {
+              user: {
+                select: { id: true, first_name: true, last_name: true, avatar_url: true },
+              },
+            },
+          },
+        },
       },
     },
   })
