@@ -22,9 +22,10 @@ describe('BookingController', () => {
       ;(bookingService.getMyBookings as jest.Mock).mockResolvedValue([mockBooking])
       const req = mockReq()
       const res = mockRes()
+      const next = jest.fn()
 
       // Act
-      await getMyBookings(req, res)
+      await getMyBookings(req, res, next)
 
       // Assert
       expect(bookingService.getMyBookings).toHaveBeenCalledWith(1)
@@ -38,9 +39,10 @@ describe('BookingController', () => {
       ;(bookingService.createBooking as jest.Mock).mockResolvedValue(mockBooking)
       const req = mockReq({ body: { session_id: 1 } })
       const res = mockRes()
+      const next = jest.fn()
 
       // Act
-      await createBooking(req, res)
+      await createBooking(req, res, next)
 
       // Assert
       expect(bookingService.createBooking).toHaveBeenCalledWith(1, 1)
@@ -48,20 +50,20 @@ describe('BookingController', () => {
       expect(res.json).toHaveBeenCalledWith(mockBooking)
     })
 
-    it("répond 400 si l'utilisateur est déjà inscrit", async () => {
+    it("transmet l'erreur si l'utilisateur est déjà inscrit", async () => {
       // Arrange
       ;(bookingService.createBooking as jest.Mock).mockRejectedValue(
         new Error('Tu es déjà inscrit à cette session')
       )
       const req = mockReq({ body: { session_id: 1 } })
       const res = mockRes()
+      const next = jest.fn()
 
       // Act
-      await createBooking(req, res)
+      await createBooking(req, res, next)
 
       // Assert
-      expect(res.status).toHaveBeenCalledWith(400)
-      expect(res.json).toHaveBeenCalledWith({ message: 'Tu es déjà inscrit à cette session' })
+      expect(next).toHaveBeenCalledWith(expect.any(Error))
     })
   })
 
@@ -71,9 +73,10 @@ describe('BookingController', () => {
       ;(bookingService.cancelBooking as jest.Mock).mockResolvedValue(undefined)
       const req = mockReq({ params: { id: '1' } })
       const res = mockRes()
+      const next = jest.fn()
 
       // Act
-      await cancelBooking(req, res)
+      await cancelBooking(req, res, next)
 
       // Assert
       expect(bookingService.cancelBooking).toHaveBeenCalledWith(1, 1)
@@ -81,19 +84,20 @@ describe('BookingController', () => {
       expect(res.send).toHaveBeenCalled()
     })
 
-    it("répond 400 si la réservation est introuvable", async () => {
+    it("transmet l'erreur si la réservation est introuvable", async () => {
       // Arrange
       ;(bookingService.cancelBooking as jest.Mock).mockRejectedValue(
         new Error('Réservation introuvable')
       )
       const req = mockReq({ params: { id: '99' } })
       const res = mockRes()
+      const next = jest.fn()
 
       // Act
-      await cancelBooking(req, res)
+      await cancelBooking(req, res, next)
 
       // Assert
-      expect(res.status).toHaveBeenCalledWith(400)
+      expect(next).toHaveBeenCalledWith(expect.any(Error))
     })
   })
 })

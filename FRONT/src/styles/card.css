@@ -49,3 +49,14 @@
 .session-card__actions {
   margin-top: var(--space-sm);
 }
+
+.session-card__coach {
+  font-size: var(--font-size-sm);
+  color: var(--color-secondary);
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.session-card__coach:hover {
+  text-decoration: underline;
+}

@@ -9,6 +9,8 @@ import CreateSessionPage from '../pages/coach/CreateSessionPage'
 import SessionDetailPage from '../pages/coach/SessionDetailPage'
 import UsersPage from '../pages/admin/UsersPage'
 import SessionsAdminPage from '../pages/admin/SessionsAdminPage'
+import ProfilePage from '../pages/shared/ProfilePage'
+import CoachProfilePage from '../pages/shared/CoachProfilePage'
 import ProtectedRoute from '../components/ProtectedRoute'
 
 export default function AppRouter() {
@@ -22,6 +24,8 @@ export default function AppRouter() {
 
         <Route element={<ProtectedRoute allowedRoles={['client', 'coach', 'admin']} />}>
           <Route path="/sessions" element={<SessionsPage />} />
+          <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/coaches/:id" element={<CoachProfilePage />} />
         </Route>
 
         <Route element={<ProtectedRoute allowedRoles={['client']} />}>

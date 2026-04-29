@@ -1,0 +1,29 @@
+.profile-card {
+  background-color: var(--color-surface);
+  border-radius: var(--radius-lg);
+  padding: var(--space-2xl);
+  max-width: 560px;
+  box-shadow: var(--shadow-md);
+}
+
+.profile__success {
+  color: var(--color-success);
+  font-size: var(--font-size-sm);
+}
+
+.coach-profile__header {
+  margin-bottom: var(--space-xl);
+}
+
+.coach-profile__specialty {
+  color: var(--color-secondary);
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  margin-top: var(--space-xs);
+}
+
+.coach-profile__bio {
+  color: var(--color-text-muted);
+  margin-top: var(--space-sm);
+  line-height: 1.7;
+}

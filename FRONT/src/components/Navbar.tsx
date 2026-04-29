@@ -14,6 +14,8 @@ export default function Navbar() {
     navigate('/login')
   }
 
+  const closeMenu = () => setMenuOpen(false)
+
   return (
     <>
       {showConfirm && (
@@ -37,28 +39,29 @@ export default function Navbar() {
         <div className={`navbar__collapse${menuOpen ? ' navbar__collapse--open' : ''}`}>
           <ul className="navbar__links">
             {(user?.role === 'client' || user?.role === 'admin') && (
-              <li><Link to="/sessions" className="navbar__link" onClick={() => setMenuOpen(false)}>Sessions</Link></li>
+              <li><Link to="/sessions" className="navbar__link" onClick={closeMenu}>Sessions</Link></li>
             )}
             {user?.role === 'client' && (
-              <li><Link to="/bookings" className="navbar__link" onClick={() => setMenuOpen(false)}>Mes réservations</Link></li>
+              <li><Link to="/bookings" className="navbar__link" onClick={closeMenu}>Mes réservations</Link></li>
             )}
             {user?.role === 'coach' && (
-              <li><Link to="/planning" className="navbar__link" onClick={() => setMenuOpen(false)}>Planning</Link></li>
+              <li><Link to="/planning" className="navbar__link" onClick={closeMenu}>Planning</Link></li>
             )}
             {user?.role === 'coach' && (
-              <li><Link to="/sessions/create" className="navbar__link" onClick={() => setMenuOpen(false)}>Créer session</Link></li>
+              <li><Link to="/sessions/create" className="navbar__link" onClick={closeMenu}>Créer session</Link></li>
             )}
             {user?.role === 'admin' && (
               <>
-                <li><Link to="/admin/users" className="navbar__link" onClick={() => setMenuOpen(false)}>Utilisateurs</Link></li>
-                <li><Link to="/admin/sessions" className="navbar__link" onClick={() => setMenuOpen(false)}>Sessions admin</Link></li>
+                <li><Link to="/admin/users" className="navbar__link" onClick={closeMenu}>Utilisateurs</Link></li>
+                <li><Link to="/admin/sessions" className="navbar__link" onClick={closeMenu}>Sessions admin</Link></li>
               </>
             )}
           </ul>
 
           <div className="navbar__right">
+            <Link to="/profile" className="navbar__link" onClick={closeMenu}>Mon profil</Link>
             <span className="navbar__email">{user?.email}</span>
-            <button className="btn btn-secondary" onClick={() => { setMenuOpen(false); setShowConfirm(true) }}>
+            <button className="btn btn-secondary" onClick={() => { closeMenu(); setShowConfirm(true) }}>
               Déconnexion
             </button>
           </div>

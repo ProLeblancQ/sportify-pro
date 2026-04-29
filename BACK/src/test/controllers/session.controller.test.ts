@@ -36,9 +36,10 @@ describe('SessionController', () => {
       ;(sessionService.getAllSessions as jest.Mock).mockResolvedValue([mockSession])
       const req = mockReq()
       const res = mockRes()
+      const next = jest.fn()
 
       // Act
-      await getAllSessions(req, res)
+      await getAllSessions(req, res, next)
 
       // Assert
       expect(res.json).toHaveBeenCalledWith([mockSession])
@@ -51,28 +52,30 @@ describe('SessionController', () => {
       ;(sessionService.createSession as jest.Mock).mockResolvedValue(mockSession)
       const req = mockReq({ body: { title: 'Yoga', duration_min: 60, max_spots: 10 } })
       const res = mockRes()
+      const next = jest.fn()
 
       // Act
-      await createSession(req, res)
+      await createSession(req, res, next)
 
       // Assert
       expect(res.status).toHaveBeenCalledWith(201)
       expect(res.json).toHaveBeenCalledWith(mockSession)
     })
 
-    it('répond 400 si le profil coach est introuvable', async () => {
+    it("transmet l'erreur si le profil coach est introuvable", async () => {
       // Arrange
       ;(sessionService.createSession as jest.Mock).mockRejectedValue(
         new Error('Profil coach introuvable pour cet utilisateur')
       )
       const req = mockReq({ body: {} })
       const res = mockRes()
+      const next = jest.fn()
 
       // Act
-      await createSession(req, res)
+      await createSession(req, res, next)
 
       // Assert
-      expect(res.status).toHaveBeenCalledWith(400)
+      expect(next).toHaveBeenCalledWith(expect.any(Error))
     })
   })
 
@@ -82,26 +85,28 @@ describe('SessionController', () => {
       ;(sessionService.deleteSession as jest.Mock).mockResolvedValue(undefined)
       const req = mockReq({ params: { id: '1' } })
       const res = mockRes()
+      const next = jest.fn()
 
       // Act
-      await deleteSession(req, res)
+      await deleteSession(req, res, next)
 
       // Assert
       expect(sessionService.deleteSession).toHaveBeenCalledWith(1)
       expect(res.status).toHaveBeenCalledWith(204)
     })
 
-    it("répond 400 en cas d'erreur", async () => {
+    it("transmet l'erreur en cas d'échec", async () => {
       // Arrange
       ;(sessionService.deleteSession as jest.Mock).mockRejectedValue(new Error('Introuvable'))
       const req = mockReq({ params: { id: '99' } })
       const res = mockRes()
+      const next = jest.fn()
 
       // Act
-      await deleteSession(req, res)
+      await deleteSession(req, res, next)
 
       // Assert
-      expect(res.status).toHaveBeenCalledWith(400)
+      expect(next).toHaveBeenCalledWith(expect.any(Error))
     })
   })
 
@@ -111,28 +116,30 @@ describe('SessionController', () => {
       ;(sessionService.getCoachSessions as jest.Mock).mockResolvedValue([mockSession])
       const req = mockReq()
       const res = mockRes()
+      const next = jest.fn()
 
       // Act
-      await getCoachSessions(req, res)
+      await getCoachSessions(req, res, next)
 
       // Assert
       expect(sessionService.getCoachSessions).toHaveBeenCalledWith(1)
       expect(res.json).toHaveBeenCalledWith([mockSession])
     })
 
-    it('répond 400 si le profil coach est introuvable', async () => {
+    it("transmet l'erreur si le profil coach est introuvable", async () => {
       // Arrange
       ;(sessionService.getCoachSessions as jest.Mock).mockRejectedValue(
         new Error('Profil coach introuvable')
       )
       const req = mockReq()
       const res = mockRes()
+      const next = jest.fn()
 
       // Act
-      await getCoachSessions(req, res)
+      await getCoachSessions(req, res, next)
 
       // Assert
-      expect(res.status).toHaveBeenCalledWith(400)
+      expect(next).toHaveBeenCalledWith(expect.any(Error))
     })
   })
 
@@ -142,27 +149,28 @@ describe('SessionController', () => {
       ;(sessionService.getSessionById as jest.Mock).mockResolvedValue({ ...mockSession, bookings: [] })
       const req = mockReq({ params: { id: '1' } })
       const res = mockRes()
+      const next = jest.fn()
 
       // Act
-      await getSessionById(req, res)
+      await getSessionById(req, res, next)
 
       // Assert
       expect(sessionService.getSessionById).toHaveBeenCalledWith(1)
       expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ id: 1 }))
     })
 
-    it('répond 404 si la session est introuvable', async () => {
+    it('transmet une erreur 404 si la session est introuvable', async () => {
       // Arrange
       ;(sessionService.getSessionById as jest.Mock).mockResolvedValue(null)
       const req = mockReq({ params: { id: '99' } })
       const res = mockRes()
+      const next = jest.fn()
 
       // Act
-      await getSessionById(req, res)
+      await getSessionById(req, res, next)
 
       // Assert
-      expect(res.status).toHaveBeenCalledWith(404)
-      expect(res.json).toHaveBeenCalledWith({ message: 'Session introuvable' })
+      expect(next).toHaveBeenCalledWith(expect.objectContaining({ status: 404 }))
     })
   })
 })

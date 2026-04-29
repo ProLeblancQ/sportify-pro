@@ -22,27 +22,28 @@ describe('AuthController', () => {
       ;(authService.register as jest.Mock).mockResolvedValue(mockUser)
       const req = mockReq({ body: { first_name: 'Jean', last_name: 'Dupont', email: 'jean@test.com', password: 'pass' } })
       const res = mockRes()
+      const next = jest.fn()
 
       // Act
-      await register(req, res)
+      await register(req, res, next)
 
       // Assert
       expect(res.status).toHaveBeenCalledWith(201)
       expect(res.json).toHaveBeenCalledWith(mockUser)
     })
 
-    it("répond 400 si l'email est déjà utilisé", async () => {
+    it("transmet l'erreur au middleware si l'email est déjà utilisé", async () => {
       // Arrange
       ;(authService.register as jest.Mock).mockRejectedValue(new Error('Email déjà utilisé'))
       const req = mockReq({ body: {} })
       const res = mockRes()
+      const next = jest.fn()
 
       // Act
-      await register(req, res)
+      await register(req, res, next)
 
       // Assert
-      expect(res.status).toHaveBeenCalledWith(400)
-      expect(res.json).toHaveBeenCalledWith({ message: 'Email déjà utilisé' })
+      expect(next).toHaveBeenCalledWith(expect.any(Error))
     })
   })
 
@@ -53,27 +54,28 @@ describe('AuthController', () => {
       ;(authService.login as jest.Mock).mockResolvedValue(mockResult)
       const req = mockReq({ body: { email: 'jean@test.com', password: 'pass' } })
       const res = mockRes()
+      const next = jest.fn()
 
       // Act
-      await login(req, res)
+      await login(req, res, next)
 
       // Assert
       expect(res.status).toHaveBeenCalledWith(200)
       expect(res.json).toHaveBeenCalledWith(mockResult)
     })
 
-    it('répond 401 si les identifiants sont incorrects', async () => {
+    it('transmet une erreur 401 si les identifiants sont incorrects', async () => {
       // Arrange
       ;(authService.login as jest.Mock).mockRejectedValue(new Error('Mot de passe incorrect'))
       const req = mockReq({ body: { email: 'jean@test.com', password: 'wrong' } })
       const res = mockRes()
+      const next = jest.fn()
 
       // Act
-      await login(req, res)
+      await login(req, res, next)
 
       // Assert
-      expect(res.status).toHaveBeenCalledWith(401)
-      expect(res.json).toHaveBeenCalledWith({ message: 'Mot de passe incorrect' })
+      expect(next).toHaveBeenCalledWith(expect.objectContaining({ status: 401 }))
     })
   })
 })

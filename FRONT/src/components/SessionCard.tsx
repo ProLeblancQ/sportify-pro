@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import { Link } from 'react-router-dom'
 import { formatDateTime, formatDuration } from '../utils/date'
 
 export interface Session {
@@ -9,6 +10,10 @@ export interface Session {
   max_spots: number
   available_spots: number
   status: string
+  coach?: {
+    id: number
+    user: { first_name: string; last_name: string }
+  }
 }
 
 interface Props {
@@ -30,6 +35,11 @@ export default function SessionCard({ session, children }: Props) {
           👥 {booked} / {session.max_spots} inscrits
         </span>
         <span className={`badge badge--${session.status}`}>{session.status}</span>
+        {session.coach && (
+          <Link to={`/coaches/${session.coach.id}`} className="session-card__coach">
+            🏋️ {session.coach.user.first_name} {session.coach.user.last_name}
+          </Link>
+        )}
       </div>
       {children && <div className="session-card__actions">{children}</div>}
     </div>
