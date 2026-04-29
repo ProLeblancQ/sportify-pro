@@ -1,12 +1,15 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useAuth } from '../../context/AuthContext'
 import * as userService from '../../services/user.service'
+
+const API = import.meta.env.VITE_API_URL as string
 
 interface UserProfile {
   id: number
   first_name: string
   last_name: string
   email: string
+  avatar_url: string | null
   role: { label: string }
   coach: { specialty: string | null; bio: string | null } | null
 }
@@ -27,6 +30,11 @@ export default function ProfilePage() {
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
 
+  const [avatarPreview, setAvatarPreview] = useState<string | null>(null)
+  const [avatarFile, setAvatarFile] = useState<File | null>(null)
+  const [uploadingAvatar, setUploadingAvatar] = useState(false)
+  const fileInputRef = useRef<HTMLInputElement>(null)
+
   useEffect(() => {
     userService.getMe(token!)
       .then(data => {
@@ -46,6 +54,37 @@ export default function ProfilePage() {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setForm(f => ({ ...f, [e.target.name]: e.target.value }))
+  }
+
+  const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    setAvatarFile(file)
+    setAvatarPreview(URL.createObjectURL(file))
+  }
+
+  const handleAvatarUpload = async () => {
+    if (!avatarFile) return
+    setUploadingAvatar(true)
+    setError('')
+    setSuccess('')
+    try {
+      const updated = await userService.uploadAvatar(token!, avatarFile)
+      setProfile(updated)
+      setAvatarFile(null)
+      setAvatarPreview(null)
+      setSuccess('Photo de profil mise à jour.')
+    } catch (e: any) {
+      setError(e.message)
+    } finally {
+      setUploadingAvatar(false)
+    }
+  }
+
+  const handleAvatarCancel = () => {
+    setAvatarFile(null)
+    setAvatarPreview(null)
+    if (fileInputRef.current) fileInputRef.current.value = ''
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -74,6 +113,8 @@ export default function ProfilePage() {
     }
   }
 
+  const avatarSrc = avatarPreview ?? (profile?.avatar_url ? `${API}${profile.avatar_url}` : null)
+
   if (loading) return <p className="empty-state">Chargement...</p>
 
   return (
@@ -86,6 +127,58 @@ export default function ProfilePage() {
       </div>
 
       <div className="profile-card">
+        {/* Avatar */}
+        <div className="profile-avatar">
+          <div className="profile-avatar__circle">
+            {avatarSrc ? (
+              <img src={avatarSrc} alt="Avatar" className="profile-avatar__img" />
+            ) : (
+              <span className="profile-avatar__initials">
+                {profile?.first_name[0]}{profile?.last_name[0]}
+              </span>
+            )}
+          </div>
+          <div className="profile-avatar__actions">
+            <button
+              type="button"
+              className="btn btn-secondary"
+              onClick={() => fileInputRef.current?.click()}
+            >
+              Changer la photo
+            </button>
+            {avatarFile && (
+              <>
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={handleAvatarUpload}
+                  disabled={uploadingAvatar}
+                >
+                  {uploadingAvatar ? 'Envoi...' : 'Confirmer'}
+                </button>
+                <button type="button" className="btn btn-secondary" onClick={handleAvatarCancel}>
+                  Annuler
+                </button>
+              </>
+            )}
+          </div>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            onChange={handleAvatarChange}
+            style={{ display: 'none' }}
+          />
+          {avatarFile && (
+            <p className="profile-avatar__hint">
+              {avatarFile.name} — cliquez sur Confirmer pour enregistrer.
+            </p>
+          )}
+        </div>
+
+        <hr className="profile-divider" />
+
+        {/* Infos */}
         <form className="auth-form" onSubmit={handleSubmit}>
           <div className="auth-form__row">
             <div className="auth-form__field">
@@ -106,7 +199,9 @@ export default function ProfilePage() {
           <div className="auth-form__field">
             <label htmlFor="password">
               Nouveau mot de passe{' '}
-              <span style={{ color: 'var(--color-text-muted)', fontWeight: 400 }}>(laisser vide pour ne pas changer)</span>
+              <span style={{ color: 'var(--color-text-muted)', fontWeight: 400 }}>
+                (laisser vide pour ne pas changer)
+              </span>
             </label>
             <input
               id="password"

@@ -26,7 +26,31 @@ export const deleteUser = (id: number) => {
 export const getMe = (id: number) => {
   return prisma.user.findUnique({
     where: { id },
-    include: { role: true, coach: true },
+    select: {
+      id: true,
+      first_name: true,
+      last_name: true,
+      email: true,
+      avatar_url: true,
+      role: true,
+      coach: true,
+    },
+  })
+}
+
+export const updateAvatar = (id: number, avatar_url: string) => {
+  return prisma.user.update({
+    where: { id },
+    data: { avatar_url },
+    select: {
+      id: true,
+      first_name: true,
+      last_name: true,
+      email: true,
+      avatar_url: true,
+      role: true,
+      coach: true,
+    },
   })
 }
 

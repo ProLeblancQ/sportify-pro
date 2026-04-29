@@ -19,6 +19,7 @@ model User {
   last_name  String
   email      String    @unique
   password   String
+  avatar_url String?
   role_id    Int
   created_at DateTime  @default(now())
   role       Role      @relation(fields: [role_id], references: [id])

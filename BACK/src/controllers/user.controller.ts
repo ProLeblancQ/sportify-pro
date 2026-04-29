@@ -46,3 +46,18 @@ export const updateMe = async (req: Request, res: Response, next: NextFunction) 
     next(err)
   }
 }
+
+export const uploadAvatar = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    if (!req.file) {
+      const err: any = new Error('Aucun fichier reçu')
+      err.status = 400
+      return next(err)
+    }
+    const avatarUrl = `/uploads/${req.file.filename}`
+    const user = await userService.updateAvatar(req.user!.id, avatarUrl)
+    res.json(user)
+  } catch (err) {
+    next(err)
+  }
+}

@@ -20,3 +20,15 @@ export const updateMe = async (token: string, data: Record<string, string>) => {
   if (!res.ok) throw new Error((await res.json()).message)
   return res.json()
 }
+
+export const uploadAvatar = async (token: string, file: File) => {
+  const formData = new FormData()
+  formData.append('avatar', file)
+  const res = await fetch(`${API}/users/me/avatar`, {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${token}` },
+    body: formData,
+  })
+  if (!res.ok) throw new Error((await res.json()).message)
+  return res.json()
+}
