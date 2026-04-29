@@ -90,6 +90,40 @@ npm run test:coverage  # avec rapport de couverture
 
 ---
 
+## Lancer avec Docker
+
+### Prérequis
+- Docker Desktop installé et en cours d'exécution
+
+### Démarrage
+
+```bash
+docker compose up --build
+```
+
+| Service | URL |
+|---|---|
+| Front-end | http://localhost:5173 |
+| Back-end | http://localhost:3000 |
+| MySQL | localhost:3306 |
+
+### Seed (première utilisation)
+
+Une fois les conteneurs démarrés, lancer le seed dans le conteneur back :
+
+```bash
+docker compose exec back npm run seed
+```
+
+### Arrêt
+
+```bash
+docker compose down        # arrête les conteneurs
+docker compose down -v     # arrête et supprime les données MySQL
+```
+
+---
+
 ## Comptes de test (après seed)
 
 | Rôle | Email | Mot de passe |
